@@ -1,5 +1,5 @@
 {
-    "name": "@sairidev/baileys2",
+    "name": "@sairidev/baileys",
     "version": "1.0.0",
     "description": "WhatsApp API Modification By Sairidev",
     "keywords": [
@@ -10,9 +10,9 @@
         "whatsapp-group",
         "botwa"
     ],
-    "homepage": "https://github.com/sairidev/baileys2",
+    "homepage": "https://github.com/sairidev/baileys",
     "repository": {
-        "url": "https://github.com/sairidev/baileys2"
+        "url": "https://github.com/sairidev/baileys"
     },
     "license": "MIT",
     "author": "sairidev",
