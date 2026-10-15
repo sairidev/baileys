@@ -20,12 +20,6 @@ Enhanced Baileys v7 with newsletter media fixes, interactive messages, albums, a
 > This is a community fork maintained by **SairiPedia**. It is **not** affiliated with Meta/WhatsApp,
 > and is not intended to replace upstream Baileys. Use it responsibly and at your own risk.
 
-> [!IMPORTANT]
-> **Honest fork policy.** This package builds on the work of others and keeps their credit intact (see
-> [Credits](#-credits)). Unlike some re-uploads, this edition:
-> - 🚫 contains **no silent auto-follow** of any channel / newsletter — your bot only follows what *you* tell it to;
-> - 🔍 ships readable, un-obfuscated code you can audit;
-> - 📝 states clearly what it changed and who it came from.
 
 ## ✨ What this fork adds
 
@@ -56,11 +50,6 @@ Or in `package.json`:
 }
 ```
 
-> **Migrating from `@sairidev/baileys-new` or `@itsliaaa/baileys`?**
-> The public API is the same. You can alias without touching your imports:
-> ```json
-> "@sairidev/baileys-new": "npm:@sairipedia/baileys@latest"
-> ```
 
 ### 🧩 Import (ESM & CJS)
 
@@ -143,15 +132,12 @@ missing `DONATE_URL` export. The rest of the behaviour matches `@itsliaaa/bailey
 This library is **not** original work by SairiPedia. Full respect and credit to everyone before:
 
 - **[WhiskeySockets / Baileys](https://github.com/WhiskeySockets/Baileys)** — the original WhatsApp Web library.
-- **[Lia Wynn (itsliaaa)](https://github.com/itsliaaa)** — the newsletter / interactive-message fork this package is based on.
 - Original Baileys maintainers & contributors: [purpshell](https://github.com/purpshell), [jlucaso1](https://github.com/jlucaso1), [adiwajshing](https://github.com/adiwajshing).
 - Protocol Buffer definitions via [WPP Connect — wa-proto](https://github.com/wppconnect-team/wa-proto).
-
-SairiPedia's changes: rebrand, removal of silent auto-follow, restored `DONATE_URL` export.
 
 > Please keep this credits section intact in any further fork. Forking is welcome — erasing the people
 > whose work you build on is not.
 
 ## ⚖️ License
 
-[MIT](LICENSE) — Copyright © 2025 Rajeh Taher/WhiskeySockets · © 2026 Lia Wynn · © 2026 SairiPedia.
+[MIT](LICENSE) — Copyright © 2025 Rajeh Taher/WhiskeySockets  · © 2026 SairiPedia.
