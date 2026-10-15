@@ -1,267 +1,137 @@
-/// <reference types="node" />
-import { AxiosRequestConfig } from 'axios';
-import { KeyPair, SignedKeyPair, SocketConfig } from '../Types';
-export declare const makeRegistrationSocket: (config: SocketConfig) => {
-    register: (code: string) => Promise<ExistsResponse>;
-    requestRegistrationCode: (registrationOptions?: RegistrationOptions) => Promise<ExistsResponse>;
-    logger: import("pino").Logger<import("pino").LoggerOptions>;
-    getOrderDetails: (orderId: string, tokenBase64: string) => Promise<import("../Types").OrderDetails>;
-    getCatalog: ({ jid, limit, cursor }: import("../Types").GetCatalogOptions) => Promise<{
-        products: import("../Types").Product[];
-        nextPageCursor: string | undefined;
+export function makeChatsSocket(config: any): {
+    findUserId: (pnLid: any) => Promise<{
+        lid: undefined;
+        phoneNumber: undefined;
     }>;
-    getCollections: (jid?: string | undefined, limit?: number) => Promise<{
-        collections: import("../Types").CatalogCollection[];
-    }>;
-    productCreate: (create: import("../Types").ProductCreate) => Promise<import("../Types").Product>;
-    productDelete: (productIds: string[]) => Promise<{
-        deleted: number;
-    }>;
-    productUpdate: (productId: string, update: import("../Types").ProductUpdate) => Promise<import("../Types").Product>;
-    sendMessageAck: ({ tag, attrs, content }: import("../WABinary").BinaryNode) => Promise<void>;
-    sendRetryRequest: (node: import("../WABinary").BinaryNode, forceIncludeKeys?: boolean) => Promise<void>;
-    offerCall: (toJid: string, isVideo?: boolean) => Promise<{
-        id: string;
-        to: string;
-    }>;
-    rejectCall: (callId: string, callFrom: string) => Promise<void>;
-    getPrivacyTokens: (jids: string[]) => Promise<import("../WABinary").BinaryNode>;
-    assertSessions: (jids: string[], force: boolean) => Promise<boolean>;
-    relayMessage: (jid: string, message: import("../Types").WAProto.IMessage, { messageId: msgId, participant, additionalAttributes, additionalNodes, useUserDevicesCache, cachedGroupMetadata, statusJidList }: import("../Types").MessageRelayOptions) => Promise<string>;
-    sendReceipt: (jid: string, participant: string | undefined, messageIds: string[], type: import("../Types").MessageReceiptType) => Promise<void>;
-    sendReceipts: (keys: import("../Types").WAProto.IMessageKey[], type: import("../Types").MessageReceiptType) => Promise<void>;
-    getButtonArgs: (message: import("../Types").WAProto.IMessage) => {
-        [key: string]: string;
+    serverProps: {
+        /** AB prop 10518: gate tctoken on 1:1 messages. Default true (safe: avoids 463). */
+        privacyTokenOn1to1: boolean;
+        /** AB prop 9666: gate tctoken on profile picture IQs. WA Web default: true. */
+        profilePicPrivacyToken: boolean;
+        /** AB prop 14303: issue tctokens to LID instead of PN. WA Web default: false. */
+        lidTrustedTokenIssueToLid: boolean;
     };
-    readMessages: (keys: import("../Types").WAProto.IMessageKey[]) => Promise<void>;
-    refreshMediaConn: (forceGet?: boolean) => Promise<import("../Types").MediaConnInfo>;
-    getUSyncDevices: (jids: string[], useCache: boolean, ignoreZeroDevices: boolean) => Promise<import("../WABinary").JidWithDevice[]>;
-    createParticipantNodes: (jids: string[], message: import("../Types").WAProto.IMessage, extraAttrs?: {
-        [key: string]: string;
-    } | undefined) => Promise<{
-        nodes: import("../WABinary").BinaryNode[];
-        shouldIncludeDeviceIdentity: boolean;
-    }>;
-    waUploadToServer: import("../Types").WAMediaUploadFunction;
-    fetchPrivacySettings: (force?: boolean) => Promise<{
-        [_: string]: string;
-    }>;
-    updateMediaMessage: (message: import("../Types").WAProto.IWebMessageInfo) => Promise<import("../Types").WAProto.IWebMessageInfo>;
-    sendMessage: (jid: string, content: import("../Types").AnyMessageContent, options?: import("../Types").MiscMessageGenerationOptions) => Promise<import("../Types").WAProto.WebMessageInfo | undefined>;
-    subscribeNewsletterUpdates: (jid: string) => Promise<{
-        duration: string;
-    }>;
-    newsletterReactionMode: (jid: string, mode: import("../Types").NewsletterReactionMode) => Promise<void>;
-    newsletterUpdateDescription: (jid: string, description?: string | undefined) => Promise<void>;
-    newsletterUpdateName: (jid: string, name: string) => Promise<void>;
-    newsletterUpdatePicture: (jid: string, content: import("../Types").WAMediaUpload) => Promise<void>;
-    newsletterRemovePicture: (jid: string) => Promise<void>;
-    newsletterUnfollow: (jid: string) => Promise<void>;
-    newsletterFollow: (jid: string) => Promise<void>;
-    newsletterUnmute: (jid: string) => Promise<void>;
-    newsletterMute: (jid: string) => Promise<void>;
-    newsletterAction: (jid: string, type: "mute" | "follow" | "unfollow" | "unmute") => Promise<void>;
-    newsletterCreate: (name: string, description: string, reaction_codes: string) => Promise<import("../Types").NewsletterMetadata>;
-    newsletterMetadata: (type: "invite" | "jid", key: string, role?: import("../Types").NewsletterViewRole | undefined) => Promise<import("../Types").NewsletterMetadata>;
-    newsletterAdminCount: (jid: string) => Promise<number>;
-    newsletterChangeOwner: (jid: string, user: string) => Promise<void>;
-    newsletterDemote: (jid: string, user: string) => Promise<void>;
-    newsletterDelete: (jid: string) => Promise<void>;
-    newsletterReactMessage: (jid: string, serverId: string, code?: string | undefined) => Promise<void>;
-    newsletterFetchMessages: (type: "invite" | "jid", key: string, count: number, after?: number | undefined) => Promise<import("../Types").NewsletterFetchedUpdate[]>;
-    newsletterFetchUpdates: (jid: string, count: number, after?: number | undefined, since?: number | undefined) => Promise<import("../Types").NewsletterFetchedUpdate[]>;
-    groupMetadata: (jid: string) => Promise<import("../Types").GroupMetadata>;
-    groupCreate: (subject: string, participants: string[]) => Promise<import("../Types").GroupMetadata>;
-    groupLeave: (id: string) => Promise<void>;
-    /** the network code of your mobile network
-     * @see {@link https://de.wikipedia.org/wiki/Mobile_Network_Code}
-     */
-    groupUpdateSubject: (jid: string, subject: string) => Promise<void>;
-    groupRequestParticipantsList: (jid: string) => Promise<{
-        [key: string]: string;
+    createCallLink: (type: any, event: any, timeoutMs: any) => Promise<any>;
+    getBotListV2: () => Promise<{
+        jid: any;
+        personaId: any;
     }[]>;
-    groupRequestParticipantsUpdate: (jid: string, participants: string[], action: "reject" | "approve") => Promise<{
-        status: string;
-        jid: string;
-    }[]>;
-    groupParticipantsUpdate: (jid: string, participants: string[], action: import("../Types").ParticipantAction) => Promise<{
-        status: string;
-        jid: string;
-        content: import("../WABinary").BinaryNode;
-    }[]>;
-    groupUpdateDescription: (jid: string, description?: string | undefined) => Promise<void>;
-    groupInviteCode: (jid: string) => Promise<string | undefined>;
-    groupRevokeInvite: (jid: string) => Promise<string | undefined>;
-    groupAcceptInvite: (code: string) => Promise<string | undefined>;
-    groupAcceptInviteV4: (key: string | import("../Types").WAProto.IMessageKey, inviteMessage: import("../Types").WAProto.Message.IGroupInviteMessage) => Promise<string>;
-    groupGetInviteInfo: (code: string) => Promise<import("../Types").GroupMetadata>;
-    groupToggleEphemeral: (jid: string, ephemeralExpiration: number) => Promise<void>;
-    groupSettingUpdate: (jid: string, setting: "announcement" | "locked" | "not_announcement" | "unlocked") => Promise<void>;
-    groupMemberAddMode: (jid: string, mode: "all_member_add" | "admin_add") => Promise<void>;
-    groupJoinApprovalMode: (jid: string, mode: "on" | "off") => Promise<void>;
-    groupFetchAllParticipating: () => Promise<{
-        [_: string]: import("../Types").GroupMetadata;
-    }>;
-    processingMutex: {
-        mutex<T>(code: () => T | Promise<T>): Promise<T>;
+    messageMutex: {
+        mutex(code: any): any;
     };
-    upsertMessage: (msg: import("../Types").WAProto.IWebMessageInfo, type: import("../Types").MessageUpsertType) => Promise<void>;
-    appPatch: (patchCreate: import("../Types").WAPatchCreate) => Promise<void>;
-    sendPresenceUpdate: (type: import("../Types").WAPresence, toJid?: string | undefined) => Promise<void>;
-    presenceSubscribe: (toJid: string, tcToken?: Buffer | undefined) => Promise<void>;
-    profilePictureUrl: (jid: string, type?: "image" | "preview", timeoutMs?: number | undefined) => Promise<string | undefined>;
-    onWhatsApp: (...jids: string[]) => Promise<{
-        exists: boolean;
-        jid: string;
-    }[]>;
-    fetchBlocklist: () => Promise<string[]>;
-    fetchStatus: (jid: string) => Promise<{
-        status: string | undefined;
-        setAt: Date;
+    receiptMutex: {
+        mutex(code: any): any;
+    };
+    appStatePatchMutex: {
+        mutex(code: any): any;
+    };
+    notificationMutex: {
+        mutex(code: any): any;
+    };
+    fetchPrivacySettings: (force?: boolean) => Promise<any>;
+    upsertMessage: (...args: any[]) => Promise<any>;
+    appPatch: (patchCreate: any) => Promise<void>;
+    sendPresenceUpdate: (type: any, toJid: any) => Promise<void>;
+    presenceSubscribe: (toJid: any) => Promise<void>;
+    profilePictureUrl: (jid: any, type: string | undefined, timeoutMs: any) => Promise<any>;
+    fetchBlocklist: () => Promise<any>;
+    fetchStatus: (...jids: any[]) => Promise<any>;
+    fetchDisappearingDuration: (...jids: any[]) => Promise<any>;
+    updateProfilePicture: (jid: any, content: any, dimensions: any) => Promise<void>;
+    removeProfilePicture: (jid: any) => Promise<void>;
+    updateProfileStatus: (status: any) => Promise<void>;
+    updateProfileName: (name: any) => Promise<void>;
+    updateBlockStatus: (jid: any, action: any) => Promise<void>;
+    updateDisableLinkPreviewsPrivacy: (isPreviewsDisabled: any) => Promise<void>;
+    updateCallPrivacy: (value: any) => Promise<void>;
+    updateMessagesPrivacy: (value: any) => Promise<void>;
+    updateLastSeenPrivacy: (value: any) => Promise<void>;
+    updateOnlinePrivacy: (value: any) => Promise<void>;
+    updateProfilePicturePrivacy: (value: any) => Promise<void>;
+    updateStatusPrivacy: (value: any) => Promise<void>;
+    updateReadReceiptsPrivacy: (value: any) => Promise<void>;
+    updateGroupsAddPrivacy: (value: any) => Promise<void>;
+    updateDefaultDisappearingMode: (duration: any) => Promise<void>;
+    getBusinessProfile: (jid: any) => Promise<{
+        wid: any;
+        address: any;
+        description: any;
+        website: any[];
+        email: any;
+        category: any;
+        business_hours: {
+            timezone: any;
+            business_config: any;
+        };
     } | undefined>;
-    updateProfilePicture: (jid: string, content: import("../Types").WAMediaUpload) => Promise<void>;
-    removeProfilePicture: (jid: string) => Promise<void>;
-    updateProfileStatus: (status: string) => Promise<void>;
-    updateProfileName: (name: string) => Promise<void>;
-    updateBlockStatus: (jid: string, action: "block" | "unblock") => Promise<void>;
-    updateLastSeenPrivacy: (value: import("../Types").WAPrivacyValue) => Promise<void>;
-    updateOnlinePrivacy: (value: import("../Types").WAPrivacyOnlineValue) => Promise<void>;
-    updateProfilePicturePrivacy: (value: import("../Types").WAPrivacyValue) => Promise<void>;
-    updateStatusPrivacy: (value: import("../Types").WAPrivacyValue) => Promise<void>;
-    updateReadReceiptsPrivacy: (value: import("../Types").WAReadReceiptsValue) => Promise<void>;
-    updateGroupsAddPrivacy: (value: import("../Types").WAPrivacyValue) => Promise<void>;
-    updateDefaultDisappearingMode: (duration: number) => Promise<void>;
-    getBusinessProfile: (jid: string) => Promise<void | import("../Types").WABusinessProfile>;
-    resyncAppState: (collections: readonly ("critical_block" | "critical_unblock_low" | "regular_high" | "regular_low" | "regular")[], isInitialSync: boolean) => Promise<void>;
-    chatModify: (mod: import("../Types").ChatModification, jid: string) => Promise<void>;
-    cleanDirtyBits: (type: "account_sync" | "groups", fromTimestamp?: string | number | undefined) => Promise<void>;
-    addChatLabel: (jid: string, labelId: string) => Promise<void>;
-    removeChatLabel: (jid: string, labelId: string) => Promise<void>;
-    addMessageLabel: (jid: string, messageId: string, labelId: string) => Promise<void>;
-    removeMessageLabel: (jid: string, messageId: string, labelId: string) => Promise<void>;
-    star: (jid: string, messages: {
-        id: string;
-        fromMe?: boolean | undefined;
-    }[], star: boolean) => Promise<void>;
-    type: "md";
-    ws: any;
-    ev: import("../Types").BaileysEventEmitter & {
-        process(handler: (events: Partial<import("../Types").BaileysEventMap>) => void | Promise<void>): () => void;
-        buffer(): void;
-        createBufferedFunction<A extends any[], T_1>(work: (...args: A) => Promise<T_1>): (...args: A) => Promise<T_1>;
-        flush(force?: boolean | undefined): boolean;
+    resyncAppState: (...args: any[]) => Promise<any>;
+    chatModify: (mod: any, jid: any) => Promise<void>;
+    cleanDirtyBits: (type: any, fromTimestamp: any) => Promise<void>;
+    addOrEditContact: (jid: any, contact: any) => Promise<void>;
+    removeContact: (jid: any) => Promise<void>;
+    placeholderResendCache: any;
+    addLabel: (jid: any, labels: any) => Promise<void>;
+    addChatLabel: (jid: any, labelId: any) => Promise<void>;
+    removeChatLabel: (jid: any, labelId: any) => Promise<void>;
+    addMessageLabel: (jid: any, messageId: any, labelId: any) => Promise<void>;
+    removeMessageLabel: (jid: any, messageId: any, labelId: any) => Promise<void>;
+    star: (jid: any, messages: any, star: any) => Promise<void>;
+    addOrEditQuickReply: (quickReply: any) => Promise<void>;
+    removeQuickReply: (timestamp: any) => Promise<void>;
+    type: string;
+    ws: import("./Client/websocket.js").WebSocketClient;
+    ev: {
+        process(handler: any): () => void;
+        emit(event: any, evData: any): any;
         isBuffering(): boolean;
+        buffer: () => void;
+        flush: () => boolean;
+        createBufferedFunction(work: any): (...args: any[]) => Promise<any>;
+        on: (...args: any[]) => any;
+        off: (...args: any[]) => any;
+        removeAllListeners: (...args: any[]) => any;
+        destroy(): void;
     };
     authState: {
-        creds: import("../Types").AuthenticationCreds;
-        keys: import("../Types").SignalKeyStoreWithTransaction;
+        creds: any;
+        keys: {
+            get: (type: any, ids: any) => Promise<any>;
+            set: (data: any) => Promise<void>;
+            isInTransaction: () => boolean;
+            transaction: (work: any, key: any) => Promise<any>;
+        };
     };
-    signalRepository: import("../Types").SignalRepository;
-    user: import("../Types").Contact | undefined;
+    signalRepository: any;
+    user: any;
     generateMessageTag: () => string;
-    query: (node: import("../WABinary").BinaryNode, timeoutMs?: number | undefined) => Promise<import("../WABinary").BinaryNode>;
-    waitForMessage: <T_2>(msgId: string, timeoutMs?: number | undefined) => Promise<T_2>;
+    query: (node: any, timeoutMs: any) => Promise<any>;
+    waitForMessage: (msgId: any, timeoutMs?: any) => Promise<any>;
     waitForSocketOpen: () => Promise<void>;
-    sendRawMessage: (data: Uint8Array | Buffer) => Promise<void>;
-    sendNode: (frame: import("../WABinary").BinaryNode) => Promise<void>;
-    logout: (msg?: string | undefined) => Promise<void>;
-    end: (error: Error | undefined) => void;
-    onUnexpectedError: (err: Error | import("@hapi/boom").Boom<any>, msg: string) => void;
+    sendRawMessage: (data: any) => Promise<void>;
+    sendNode: (frame: any) => Promise<void>;
+    logout: (msg: any) => Promise<void>;
+    end: (error: any) => Promise<void>;
+    registerSocketEndHandler: (handler: any) => void;
+    onUnexpectedError: (err: any, msg: any) => void;
     uploadPreKeys: (count?: number) => Promise<void>;
     uploadPreKeysToServerIfRequired: () => Promise<void>;
-    requestPairingCode: (phoneNumber: string) => Promise<string>;
-    waitForConnectionUpdate: (check: (u: Partial<import("../Types").ConnectionState>) => boolean | undefined, timeoutMs?: number | undefined) => Promise<void>;
-    sendWAMBuffer: (wamBuffer: Buffer) => Promise<import("../WABinary").BinaryNode>;
+    digestKeyBundle: () => Promise<void>;
+    rotateSignedPreKey: () => Promise<void>;
+    requestPairingCode: (phoneNumber: any, customPairingCode: any) => Promise<any>;
+    updateServerTimeOffset: ({ attrs }: {
+        attrs: any;
+    }) => void;
+    sendUnifiedSession: () => Promise<void>;
+    wamBuffer: import("../index.js").BinaryInfo;
+    waitForConnectionUpdate: (check: any, timeoutMs: any) => Promise<void>;
+    sendWAMBuffer: (wamBuffer: any) => Promise<any>;
+    executeUSyncQuery: (usyncQuery: any) => Promise<any>;
+    onWhatsApp: (...phoneNumber: any[]) => Promise<any>;
+    fetchAccountReachoutTimelock: () => Promise<{
+        isActive: boolean;
+        timeEnforcementEnds: Date | undefined;
+        enforcementType: any;
+    }>;
+    fetchNewChatMessageCap: () => Promise<any>;
 };
-export interface RegistrationData {
-    registrationId: number;
-    signedPreKey: SignedKeyPair;
-    noiseKey: KeyPair;
-    signedIdentityKey: KeyPair;
-    identityId: Buffer;
-    phoneId: string;
-    deviceId: string;
-    backupToken: Buffer;
-}
-export interface RegistrationOptions {
-    /** your phone number */
-    phoneNumber?: string;
-    /** the country code of your phone number */
-    phoneNumberCountryCode: string;
-    /** your phone number without country code */
-    phoneNumberNationalNumber: string;
-    /** the country code of your mobile network
-     * @see {@link https://de.wikipedia.org/wiki/Mobile_Country_Code}
-     */
-    phoneNumberMobileCountryCode: string;
-    /** the network code of your mobile network
-     * @see {@link https://de.wikipedia.org/wiki/Mobile_Network_Code}
-     */
-    phoneNumberMobileNetworkCode: string;
-    /**
-     * How to send the one time code
-     */
-    method?: 'sms' | 'voice' | 'captcha';
-    /**
-     * The captcha code if it was requested
-     */
-    captcha?: string;
-}
-export type RegistrationParams = RegistrationData & RegistrationOptions;
-export declare function registrationParams(params: RegistrationParams): {
-    cc: string;
-    in: string;
-    Rc: string;
-    lg: string;
-    lc: string;
-    mistyped: string;
-    authkey: string;
-    e_regid: string;
-    e_keytype: string;
-    e_ident: string;
-    e_skey_id: string;
-    e_skey_val: string;
-    e_skey_sig: string;
-    fdid: string;
-    network_ratio_type: string;
-    expid: string;
-    simnum: string;
-    hasinrc: string;
-    pid: string;
-    id: string;
-    backup_token: string;
-    token: string;
-    fraud_checkpoint_code: string | undefined;
-};
-/**
- * Requests a registration code for the given phone number.
- */
-export declare function mobileRegisterCode(params: RegistrationParams, fetchOptions?: AxiosRequestConfig): Promise<ExistsResponse>;
-export declare function mobileRegisterExists(params: RegistrationParams, fetchOptions?: AxiosRequestConfig): Promise<ExistsResponse>;
-/**
- * Registers the phone number on whatsapp with the received OTP code.
- */
-export declare function mobileRegister(params: RegistrationParams & {
-    code: string;
-}, fetchOptions?: AxiosRequestConfig): Promise<ExistsResponse>;
-/**
- * Encrypts the given string as AEAD aes-256-gcm with the public whatsapp key and a random keypair.
- */
-export declare function mobileRegisterEncrypt(data: string): string;
-export declare function mobileRegisterFetch(path: string, opts?: AxiosRequestConfig): Promise<ExistsResponse>;
-export interface ExistsResponse {
-    status: 'fail' | 'sent';
-    voice_length?: number;
-    voice_wait?: number;
-    sms_length?: number;
-    sms_wait?: number;
-    reason?: 'incorrect' | 'missing_param' | 'code_checkpoint';
-    login?: string;
-    flash_type?: number;
-    ab_hash?: string;
-    ab_key?: string;
-    exp_cfg?: string;
-    lid?: string;
-    image_blob?: string;
-    audio_blob?: string;
-}
+//# sourceMappingURL=chats.d.ts.map

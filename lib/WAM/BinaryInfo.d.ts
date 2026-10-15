@@ -1,17 +1,8 @@
-/// <reference types="node" />
-export declare class BinaryInfo {
+export class BinaryInfo {
+    constructor(options?: {});
     protocolVersion: number;
     sequence: number;
-    events: {
-        [x: string]: {
-            props: {
-                [x: string]: any;
-            };
-            globals: {
-                [x: string]: any;
-            };
-        };
-    }[];
-    buffer: Buffer[];
-    constructor(options?: Partial<BinaryInfo>);
+    events: any[];
+    buffer: any[];
 }
+//# sourceMappingURL=BinaryInfo.d.ts.map

@@ -1,25 +1,39 @@
-import { USyncQueryProtocol } from '../../Types/USync';
-import { BinaryNode } from '../../WABinary';
-import { USyncUser } from '../USyncUser';
-export type BotProfileCommand = {
+export class USyncBotProfileProtocol {
     name: string;
-    description: string;
-};
-export type BotProfileInfo = {
-    jid: string;
-    name: string;
-    attributes: string;
-    description: string;
-    category: string;
-    isDefault: boolean;
-    prompts: string[];
-    personaId: string;
-    commands: BotProfileCommand[];
-    commandsDescription: string;
-};
-export declare class USyncBotProfileProtocol implements USyncQueryProtocol {
-    name: string;
-    getQueryElement(): BinaryNode;
-    getUserElement(user: USyncUser): BinaryNode;
-    parser(node: BinaryNode): BotProfileInfo;
+    getQueryElement(): {
+        tag: string;
+        attrs: {};
+        content: {
+            tag: string;
+            attrs: {
+                v: string;
+            };
+        }[];
+    };
+    getUserElement(user: any): {
+        tag: string;
+        attrs: {};
+        content: {
+            tag: string;
+            attrs: {
+                persona_id: any;
+            };
+        }[];
+    };
+    parser(node: any): {
+        isDefault: boolean;
+        jid: any;
+        name: any;
+        attributes: any;
+        description: any;
+        category: any;
+        personaId: any;
+        commandsDescription: any;
+        commands: {
+            name: any;
+            description: any;
+        }[];
+        prompts: string[];
+    };
 }
+//# sourceMappingURL=UsyncBotProfileProtocol.d.ts.map

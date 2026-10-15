@@ -1,43 +1,61 @@
-/// <reference types="node" />
-import { Boom } from '@hapi/boom';
-import { SocketConfig } from '../Types';
-import { BinaryNode } from '../WABinary';
-/**
- * Connects to WA servers and performs:
- * - simple queries (no retry mechanism, wait for connection establishment)
- * - listen to messages and emit events
- * - query phone connection
- */
-export declare const makeSocket: (config: SocketConfig) => {
-    type: "md";
-    ws: any;
-    ev: import("../Types").BaileysEventEmitter & {
-        process(handler: (events: Partial<import("../Types").BaileysEventMap>) => void | Promise<void>): () => void;
-        buffer(): void;
-        createBufferedFunction<A extends any[], T>(work: (...args: A) => Promise<T>): (...args: A) => Promise<T>;
-        flush(force?: boolean | undefined): boolean;
+export function makeSocket(config: any): {
+    type: string;
+    ws: WebSocketClient;
+    ev: {
+        process(handler: any): () => void;
+        emit(event: any, evData: any): any;
         isBuffering(): boolean;
+        buffer: () => void;
+        flush: () => boolean;
+        createBufferedFunction(work: any): (...args: any[]) => Promise<any>;
+        on: (...args: any[]) => any;
+        off: (...args: any[]) => any;
+        removeAllListeners: (...args: any[]) => any;
+        destroy(): void;
     };
     authState: {
-        creds: import("../Types").AuthenticationCreds;
-        keys: import("../Types").SignalKeyStoreWithTransaction;
+        creds: any;
+        keys: {
+            get: (type: any, ids: any) => Promise<any>;
+            set: (data: any) => Promise<void>;
+            isInTransaction: () => boolean;
+            transaction: (work: any, key: any) => Promise<any>;
+        };
     };
-    signalRepository: import("../Types").SignalRepository;
-    readonly user: import("../Types").Contact | undefined;
+    signalRepository: any;
+    readonly user: any;
     generateMessageTag: () => string;
-    query: (node: BinaryNode, timeoutMs?: number) => Promise<BinaryNode>;
-    waitForMessage: <T_1>(msgId: string, timeoutMs?: number | undefined) => Promise<T_1>;
+    query: (node: any, timeoutMs: any) => Promise<any>;
+    waitForMessage: (msgId: any, timeoutMs?: any) => Promise<any>;
     waitForSocketOpen: () => Promise<void>;
-    sendRawMessage: (data: Uint8Array | Buffer) => Promise<void>;
-    sendNode: (frame: BinaryNode) => Promise<void>;
-    logout: (msg?: string) => Promise<void>;
-    end: (error: Error | undefined) => void;
-    onUnexpectedError: (err: Error | Boom, msg: string) => void;
+    sendRawMessage: (data: any) => Promise<void>;
+    sendNode: (frame: any) => Promise<void>;
+    logout: (msg: any) => Promise<void>;
+    end: (error: any) => Promise<void>;
+    registerSocketEndHandler: (handler: any) => void;
+    onUnexpectedError: (err: any, msg: any) => void;
     uploadPreKeys: (count?: number) => Promise<void>;
     uploadPreKeysToServerIfRequired: () => Promise<void>;
-    requestPairingCode: (phoneNumber: string) => Promise<string>;
+    digestKeyBundle: () => Promise<void>;
+    rotateSignedPreKey: () => Promise<void>;
+    requestPairingCode: (phoneNumber: any, customPairingCode: any) => Promise<any>;
+    updateServerTimeOffset: ({ attrs }: {
+        attrs: any;
+    }) => void;
+    sendUnifiedSession: () => Promise<void>;
+    wamBuffer: BinaryInfo;
     /** Waits for the connection to WA to reach a state */
-    waitForConnectionUpdate: (check: (u: Partial<import("../Types").ConnectionState>) => boolean | undefined, timeoutMs?: number | undefined) => Promise<void>;
-    sendWAMBuffer: (wamBuffer: Buffer) => Promise<BinaryNode>;
+    waitForConnectionUpdate: (check: any, timeoutMs: any) => Promise<void>;
+    sendWAMBuffer: (wamBuffer: any) => Promise<any>;
+    executeUSyncQuery: (usyncQuery: any) => Promise<any>;
+    onWhatsApp: (...phoneNumber: any[]) => Promise<any>;
+    fetchAccountReachoutTimelock: () => Promise<{
+        isActive: boolean;
+        timeEnforcementEnds: Date | undefined;
+        enforcementType: any;
+    }>;
+    fetchNewChatMessageCap: () => Promise<any>;
 };
-export type Socket = ReturnType<typeof makeSocket>;
+import { WebSocketClient } from './Client/index.js';
+import { BinaryInfo } from '../WAM/BinaryInfo.js';
+//# sourceMappingURL=socket.d.ts.map

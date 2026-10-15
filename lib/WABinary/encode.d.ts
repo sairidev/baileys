@@ -1,3 +1,3 @@
-/// <reference types="node" />
-import type { BinaryNode, BinaryNodeCodingOptions } from './types';
-export declare const encodeBinaryNode: ({ tag, attrs, content }: BinaryNode, opts?: Pick<BinaryNodeCodingOptions, 'TAGS' | 'TOKEN_MAP'>, buffer?: number[]) => Buffer;
+export function encodeBinaryNode(node: any, opts?: typeof constants, buffer?: number[]): any;
+import * as constants from './constants.js';
+//# sourceMappingURL=encode.d.ts.map

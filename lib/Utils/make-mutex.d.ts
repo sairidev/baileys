@@ -1,7 +1,7 @@
-export declare const makeMutex: () => {
-    mutex<T>(code: () => T | Promise<T>): Promise<T>;
+export function makeMutex(): {
+    mutex(code: any): any;
 };
-export type Mutex = ReturnType<typeof makeMutex>;
-export declare const makeKeyedMutex: () => {
-    mutex<T>(key: string, task: () => T | Promise<T>): Promise<T>;
+export function makeKeyedMutex(): {
+    mutex(key: any, task: any): Promise<any>;
 };
+//# sourceMappingURL=make-mutex.d.ts.map

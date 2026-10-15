@@ -1,15 +1,76 @@
-import { AxiosRequestConfig } from 'axios';
-import { proto } from '../../WAProto';
-import { Chat, Contact } from '../Types';
-export declare const downloadHistory: (msg: proto.Message.IHistorySyncNotification, options: AxiosRequestConfig<any>) => Promise<proto.HistorySync>;
-export declare const processHistoryMessage: (item: proto.IHistorySync) => {
-    chats: Chat[];
-    contacts: Contact[];
-    messages: proto.IWebMessageInfo[];
+export function downloadHistory(msg: any, options: any): Promise<proto.HistorySync>;
+export function processHistoryMessage(item: any, logger: any): {
+    chats: any[];
+    contacts: ({
+        id: any;
+        name: any;
+        username: any;
+        lid: any;
+        phoneNumber: any;
+        verifiedName?: undefined;
+        notify?: undefined;
+    } | {
+        id: any;
+        verifiedName: any;
+        name?: undefined;
+        username?: undefined;
+        lid?: undefined;
+        phoneNumber?: undefined;
+        notify?: undefined;
+    } | {
+        id: any;
+        notify: any;
+        name?: undefined;
+        username?: undefined;
+        lid?: undefined;
+        phoneNumber?: undefined;
+        verifiedName?: undefined;
+    })[];
+    messages: any[];
+    lidPnMappings: {
+        lid: any;
+        pn: any;
+    }[];
+    pastParticipants: any;
+    syncType: any;
+    progress: any;
 };
-export declare const downloadAndProcessHistorySyncNotification: (msg: proto.Message.IHistorySyncNotification, options: AxiosRequestConfig<any>) => Promise<{
-    chats: Chat[];
-    contacts: Contact[];
-    messages: proto.IWebMessageInfo[];
+export function downloadAndProcessHistorySyncNotification(msg: any, options: any, logger: any): Promise<{
+    chats: any[];
+    contacts: ({
+        id: any;
+        name: any;
+        username: any;
+        lid: any;
+        phoneNumber: any;
+        verifiedName?: undefined;
+        notify?: undefined;
+    } | {
+        id: any;
+        verifiedName: any;
+        name?: undefined;
+        username?: undefined;
+        lid?: undefined;
+        phoneNumber?: undefined;
+        notify?: undefined;
+    } | {
+        id: any;
+        notify: any;
+        name?: undefined;
+        username?: undefined;
+        lid?: undefined;
+        phoneNumber?: undefined;
+        verifiedName?: undefined;
+    })[];
+    messages: any[];
+    lidPnMappings: {
+        lid: any;
+        pn: any;
+    }[];
+    pastParticipants: any;
+    syncType: any;
+    progress: any;
 }>;
-export declare const getHistoryMsg: (message: proto.IMessage) => proto.Message.IHistorySyncNotification | null | undefined;
+export function getHistoryMsg(message: any): any;
+import { proto } from '../../WAProto/index.js';
+//# sourceMappingURL=history.d.ts.map
