@@ -118,8 +118,7 @@ See the [upstream Baileys docs](https://github.com/WhiskeySockets/Baileys) for t
 
 
 
-This fork **removes** the silent newsletter auto-follow that some downstream re-uploads added, and fixes a
-missing `DONATE_URL` export. The rest of the behaviour matches `@itsliaaa/baileys`.
+This fork **removes** the silent newsletter auto-follow that some downstream re-uploads added.
 
 ## 📣 Credits
 
