@@ -116,13 +116,7 @@ All upstream Baileys message helpers work as documented. On top of them this for
 album, payment, sticker-pack, rich-response, code-block, inline-entity and table message types listed above.
 See the [upstream Baileys docs](https://github.com/WhiskeySockets/Baileys) for the shared API.
 
-## 📦 Fork lineage
 
-```
-WhiskeySockets/Baileys   (original library)
-        └── @itsliaaa/baileys   (Lia Wynn — newsletter/interactive fork)
-                └── @sairipedia/baileys   (this package — rebrand, no silent auto-follow)
-```
 
 This fork **removes** the silent newsletter auto-follow that some downstream re-uploads added, and fixes a
 missing `DONATE_URL` export. The rest of the behaviour matches `@itsliaaa/baileys`.
